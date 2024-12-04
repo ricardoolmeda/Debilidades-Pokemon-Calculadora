@@ -30,36 +30,61 @@ datos = respuesta.json()
 # Queremos que lo muestre el tipo o tipos del pokemon
 
 # Para ello creamos una lista vacía para almacenar los tipos del pokemon
-tipos_pokemon = []
+tipo_elegido = []
 
 # Creamos el bucle for :
 print(f"------------Tipo de {pokemon}:------------")
 
 for types in datos["types"]:
     tipo =types["type"]["name"]
-    tipos_pokemon.append(tipo)
+    tipo_elegido.append(tipo)
     print(tipo)
 
 # Quiero que me indique las debilidades que tiene el pokemon para ello creamos un diccionario
 
-tipo_debilidades = {
-    "Normal": ["Fighting"],
-    "Fire": ["Water", "Ground", "Rock"],
-    "Water": ["Electric", "Grass"],
-    "Electric": ["Ground"],
-    "Grass": ["Fire", "Ice", "Poison", "Flying", "Bug"],
-    "Ice": ["Fire", "Fighting", "Rock", "Steel"],
-    "Fighting": ["Flying", "Psychic", "Fairy"],
-    "Poison": ["Ground", "Psychic"],
-    "Ground": ["Water", "Ice", "Grass"],
-    "Flying": ["Electric", "Ice", "Rock"],
-    "Psychic": ["Bug", "Ghost", "Dark"],
-    "Bug": ["Fire", "Flying", "Rock"],
-    "Rock": ["Water", "Grass", "Fighting", "Ground", "Steel"],
-    "Ghost": ["Ghost", "Dark"],
-    "Dragon": ["Ice", "Dragon", "Fairy"],
-    "Dark": ["Fighting", "Bug", "Fairy"],
-    "Steel": ["Fire", "Fighting", "Ground"],
-    "Fairy": ["Poison", "Steel"]
+# Diccionario con fortalezas, debilidades e inmunidades de cada tipo de Pokémon
+tipos_pokemons = {
+    "Water": {
+        "strengths": {"Fire": 2, "Rock": 2, "Ground": 2},
+        "weaknesses": {"Electric": 2, "Grass": 2},
+        "immunities": []
+    },
+    "Fire": {
+        "strengths": {"Grass": 2, "Ice": 2, "Bug": 2, "Steel": 2},
+        "weaknesses": {"Water": 2, "Rock": 2, "Ground": 2},
+        "immunities": []
+    },
+    "Grass": {
+        "strengths": {"Water": 2, "Ground": 2, "Rock": 2},
+        "weaknesses": {"Fire": 2, "Ice": 2, "Poison": 2, "Flying": 2, "Bug": 2},
+        "immunities": []
+    },
+    "Electric": {
+        "strengths": {"Water": 2, "Flying": 2},
+        "weaknesses": {"Ground": 2},
+        "immunities": []
+    },
+    "Ice": {
+        "strengths": {"Grass": 2, "Ground": 2, "Flying": 2, "Dragon": 2},
+        "weaknesses": {"Fire": 2, "Fighting": 2, "Rock": 2, "Steel": 2},
+        "immunities": []
+    },
+    "Ground": {
+        "strengths": {"Fire": 2, "Electric": 2, "Poison": 2, "Rock": 2, "Steel": 2},
+        "weaknesses": {"Water": 2, "Ice": 2, "Grass": 2},
+        "immunities": ["Electric"]
+    },
+    "Ghost": {
+        "strengths": {"Ghost": 2, "Psychic": 2},
+        "weaknesses": {"Ghost": 2, "Dark": 2},
+        "immunities": ["Normal", "Fighting"]
+    },
+    "Normal": {
+        "strengths": {},
+        "weaknesses": {"Fighting": 2},
+        "immunities": ["Ghost"]
+    }
 }
 
+
+# print("Estos son los tipos pokemons guardados en la variable: ", tipo_elegido) # esto es porque estoy probando la difencia entre .expend y .append y asi tambien saber si lo guarda.
