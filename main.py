@@ -3,6 +3,9 @@
 # Importamos la libreria requests
 import requests
 import my_module
+import matplotlib.pyplot as plt
+from urllib.request import urlopen
+from PIL import Image
 
 # Creamos la variable URL con nuestro enlace
 URL = "https://pokeapi.co/api/v2/pokemon/"
@@ -20,16 +23,25 @@ URL = "https://pokeapi.co/api/v2/pokemon/"
 # A nosotros nos interesa los pokemons filtramos solo los pokemons con un input para que solo nos salga esa
 
 pokemon = input("Escribe un pokemon: ")
-
+# pokemon = "pikachu" # prueba para no estar siempre con el imput
 
 respuesta = requests.get(URL + pokemon)
 
 datos = respuesta.json()
-
 # print(datos) # Para ver todos los datos que hay
 
-# Queremos que lo muestre el tipo o tipos del pokemon
+# Para cargar imagenes imagen
+url_image = datos["sprites"]["other"]["official-artwork"]["front_default"]
 
+# Queremos mostrar la imagen
+print("------------Imagen:------------")
+
+im = Image.open(urlopen(url_image))
+plt.imshow(im)
+plt.show()
+
+
+# Queremos que lo muestre el tipo o tipos del pokemon
 # Para ello creamos una lista vacía para almacenar los tipos del pokemon
 tipo_elegido = []
 
@@ -37,13 +49,9 @@ tipo_elegido = []
 print(f"------------Tipo de {pokemon}:------------")
 
 for types in datos["types"]:
-    tipo =types["type"]["name"]
+    tipo = types["type"]["name"]
     tipo_elegido.append(tipo)
     print(tipo)
-
-# Quiero que me indique las debilidades que tiene el pokemon para ello creamos un diccionario
-
-# Diccionario con fortalezas, debilidades e inmunidades de cada tipo de Pokémon
 
 # print("Estos son los tipos pokemons guardados en la variable: ", tipo_elegido) # esto es porque estoy probando la difencia entre .expend y .append y asi tambien saber si lo guarda.
 
@@ -82,19 +90,37 @@ def info_damage(tipos):
 
 super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune = info_damage(tipo_elegido)
 
+# Ejecutamos el codigo
 
-print(f"------------Super effective 4x:------------")
+print("------------Super effective 4x:------------")
 for atack_type in super_effective_4x:
     print(atack_type[0])
-print(f"------------Super effective 2x:------------")
+print("------------Super effective 2x:------------")
 for atack_type in super_effective_2x:
     print(atack_type[0])
-print(f"------------Normal:------------")
+print("------------Normal:------------")
 for atack_type in normal_1x:
     print(atack_type[0])
-print(f"------------Not effective 0.5x:------------")
+print("------------Not effective 0.5x:------------")
 for atack_type in not_effective_05x:
     print(atack_type[0])
-print(f"------------Inmune:------------")
+print("------------Inmune:------------")
 for atack_type in inmune:
     print(atack_type[0])
+
+
+
+# Queremos que nos muestre las stats
+print("------------Stats:------------")
+for stats in datos["stats"]:
+    stat_name = stats["stat"]["name"] 
+    stat_base = stats["base_stat"]
+    print(f"{stat_name}: {stat_base}")
+    
+# Queremos que nos muestre las habilidades
+print("------------Ability:------------")
+for abilities in datos["abilities"]:
+    abiliies_name = abilities["ability"]["name"] 
+    stat_base = stats["base_stat"]
+    print(f"{abiliies_name}") 
+
