@@ -1,5 +1,5 @@
 # Tabla de tipos pokemon daño 2x, 1x daño normal, 0.5x resistente y 0 es inmune
-tipos_pokemons = {
+info_types = {
     "normal": {
         "fighting": 2.0, 
         "ghost": 0.0,

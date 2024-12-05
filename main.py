@@ -47,3 +47,54 @@ for types in datos["types"]:
 
 # print("Estos son los tipos pokemons guardados en la variable: ", tipo_elegido) # esto es porque estoy probando la difencia entre .expend y .append y asi tambien saber si lo guarda.
 
+# Con el modulo que hemos creado vamos a añadir el tipo de daño que hace
+
+def info_damage(tipos):
+    combined_types = {}
+
+    for tipo in tipos:
+        if tipo in my_module.info_types:
+            for atack_type, multiplicator in my_module.info_types[tipo].items():
+                if atack_type in combined_types:
+                    combined_types[atack_type] *= multiplicator
+                else:
+                    combined_types[atack_type] = multiplicator
+
+    super_effective_4x = []
+    super_effective_2x = []
+    normal_1x = []
+    not_effective_05x = []
+    inmune = []
+
+    for atack_type, value in combined_types.items():
+        if value == 4:
+            super_effective_4x.append((atack_type, value))
+        elif value == 2:
+            super_effective_2x.append((atack_type, value))
+        elif value == 1:
+            normal_1x.append((atack_type, value))
+        elif value == 0.5:
+            not_effective_05x.append((atack_type, value))
+        else:
+            inmune.append((atack_type, value))
+
+    return super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune
+
+super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune = info_damage(tipo_elegido)
+
+
+print(f"------------Super effective 4x:------------")
+for atack_type in super_effective_4x:
+    print(atack_type)
+print(f"------------Super effective 2x:------------")
+for atack_type in super_effective_2x:
+    print(f"{atack_type}")
+print(f"------------Normal:------------")
+for atack_type in normal_1x:
+    print(f"{atack_type}")
+print(f"------------Not effective 0.5x:------------")
+for atack_type in not_effective_05x:
+    print(f"{atack_type}")
+print(f"------------Inmune:------------")
+for atack_type in inmune:
+    print(f"{atack_type} ")
