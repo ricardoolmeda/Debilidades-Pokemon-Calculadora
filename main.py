@@ -85,16 +85,16 @@ super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune = i
 
 print(f"------------Super effective 4x:------------")
 for atack_type in super_effective_4x:
-    print(atack_type)
+    print(atack_type[0])
 print(f"------------Super effective 2x:------------")
 for atack_type in super_effective_2x:
-    print(f"{atack_type}")
+    print(atack_type[0])
 print(f"------------Normal:------------")
 for atack_type in normal_1x:
-    print(f"{atack_type}")
+    print(atack_type[0])
 print(f"------------Not effective 0.5x:------------")
 for atack_type in not_effective_05x:
-    print(f"{atack_type}")
+    print(atack_type[0])
 print(f"------------Inmune:------------")
 for atack_type in inmune:
-    print(f"{atack_type} ")
+    print(atack_type[0])
