@@ -21,13 +21,21 @@ URL = "https://pokeapi.co/api/v2/pokemon/"
 # print(response.json())
 
 # A nosotros nos interesa los pokemons filtramos solo los pokemons con un input para que solo nos salga esa
+while True: # A nosotros nos interesan los pokemons, filtramos solo los pokemons con un input para que solo nos salga esa opción 
+    pokemon = input("Escribe un pokemon: ").lower() 
+    
+    # Intentamos obtener los datos del Pokémon 
+    try: 
+        respuesta = requests.get(URL + pokemon) 
+        respuesta.raise_for_status() # Esto lanzará una excepción si la solicitud no fue exitosa 
 
-pokemon = input("Escribe un pokemon: ")
+        datos = respuesta.json()
+        break # Salimos del bucle si obtenemos una respuesta válida 
+    
+    except requests.exceptions.HTTPError: 
+        print("Error: El Pokémon no existe. Por favor, introduce un nombre válido.")
+
 # pokemon = "pikachu" # prueba para no estar siempre con el imput
-
-respuesta = requests.get(URL + pokemon)
-
-datos = respuesta.json()
 # print(datos) # Para ver todos los datos que hay
 
 # Para cargar imagenes imagen
