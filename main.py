@@ -10,61 +10,35 @@ from PIL import Image
 # Creamos la variable URL con nuestro enlace
 URL = "https://pokeapi.co/api/v2/pokemon/"
 
-# Llamos a nuestro requests con get para que nos muestre los valores mediante get para que nos lo muestre
-# Lo añadimos a la variable response (respuesta para poder utilizar la api)
-# response = requests.get(URL)
 
-# Podemos saber si la API tiene algún error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-# print(response) # responde a 200 por lo que la api es aceptable
+# Creamos la función para obtener los datos de los pokemons
+def obtener_datos_pokemon(pokemon):      
+    try: 
+        respuesta = requests.get(URL + pokemon) # Llamos a nuestro requests con get para que nos muestre los valores mediante get para que nos lo muestre
+        respuesta.raise_for_status() 
+        return respuesta.json() # Podemos saber si la API tiene algún error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+    except requests.exceptions.HTTPError: 
+        print("Error: El Pokémon no existe. Por favor, introduce un nombre válido.")
+        return None
 
 # Asi podemos ver todo lo que trae la API al ser un archivo .json lo tenemos que indicar para ver lo que trae
 # print(response.json())
 
-# A nosotros nos interesa los pokemons filtramos solo los pokemons con un input para que solo nos salga esa
-while True: # A nosotros nos interesan los pokemons, filtramos solo los pokemons con un input para que solo nos salga esa opción 
-    pokemon = input("Escribe un pokemon: ").lower() 
-    
-    # Intentamos obtener los datos del Pokémon 
-    try: 
-        respuesta = requests.get(URL + pokemon) 
-        respuesta.raise_for_status() # Esto lanzará una excepción si la solicitud no fue exitosa 
-
-        datos = respuesta.json()
-        break # Salimos del bucle si obtenemos una respuesta válida 
-    
-    except requests.exceptions.HTTPError: 
-        print("Error: El Pokémon no existe. Por favor, introduce un nombre válido.")
-
-# pokemon = "pikachu" # prueba para no estar siempre con el imput
+# pokemon = "pikachu" # prueba para no estar siempre con el input
 # print(datos) # Para ver todos los datos que hay
 
-# Para cargar imagenes imagen
-url_image = datos["sprites"]["other"]["official-artwork"]["front_default"]
+# Creamos la funcion para mostrar la imagen
+def mostar_imagen(url_image):
+    im = Image.open(urlopen(url_image))
+    plt.imshow(im)
+    plt.show()
 
-# Queremos mostrar la imagen
-print("------------Imagen:------------")
+# Creamos la funcion para obtener los tipos del pokemon
+def obtener_tipos(datos):
+   tipos = [tipo["type"]["name"] for tipo in datos["types"]] 
+   return tipos
 
-im = Image.open(urlopen(url_image))
-plt.imshow(im)
-plt.show()
-
-
-# Queremos que lo muestre el tipo o tipos del pokemon
-# Para ello creamos una lista vacía para almacenar los tipos del pokemon
-tipo_elegido = []
-
-# Creamos el bucle for :
-print(f"------------Tipo de {pokemon}:------------")
-
-for types in datos["types"]:
-    tipo = types["type"]["name"]
-    tipo_elegido.append(tipo)
-    print(tipo)
-
-# print("Estos son los tipos pokemons guardados en la variable: ", tipo_elegido) # esto es porque estoy probando la difencia entre .expend y .append y asi tambien saber si lo guarda.
-
-# Con el modulo que hemos creado vamos a añadir el tipo de daño que hace
-
+# Creamos la funcion de daños
 def info_damage(tipos):
     combined_types = {}
 
@@ -76,171 +50,87 @@ def info_damage(tipos):
                 else:
                     combined_types[atack_type] = multiplicator
 
-    super_effective_4x = []
-    super_effective_2x = []
-    normal_1x = []
-    not_effective_05x = []
-    inmune = []
+    categorias = { 
+        "super_effective_4x": [], 
+        "super_effective_2x": [], 
+        "normal_1x": [], 
+        "not_effective_05x": [], 
+        "inmune": [] }
+            
 
     for atack_type, value in combined_types.items():
         if value == 4:
-            super_effective_4x.append((atack_type, value))
+            categorias["super_effective_4x"].append((atack_type, value))
         elif value == 2:
-            super_effective_2x.append((atack_type, value))
+            categorias["super_effective_2x"].append((atack_type, value))
         elif value == 1:
-            normal_1x.append((atack_type, value))
+            categorias["normal_1x"].append((atack_type, value))
         elif value == 0.5:
-            not_effective_05x.append((atack_type, value))
+            categorias["not_effective_05x"].append((atack_type, value))
         else:
-            inmune.append((atack_type, value))
+            categorias["inmune"].append((atack_type, value))
 
-    return super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune
+    return categorias
 
-super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune = info_damage(tipo_elegido)
+def mostrar_informacion_pokemon(datos):
+    # Mostramos la imagen
+    url_image = datos["sprites"]["other"]["official-artwork"]["front_default"] # Para cargar la imagen
+    print("------------Imagen:------------")
+    mostar_imagen(url_image)
 
-# Ejecutamos el codigo
-print("------------Debilidades del pokemon:------------")
-print("------------Super effective 4x:------------")
-for atack_type in super_effective_4x:
-    print(atack_type[0])
-print("------------Super effective 2x:------------")
-for atack_type in super_effective_2x:
-    print(atack_type[0])
-print("------------Normal:------------")
-for atack_type in normal_1x:
-    print(atack_type[0])
-print("------------Not effective 0.5x:------------")
-for atack_type in not_effective_05x:
-    print(atack_type[0])
-print("------------Inmune:------------")
-for atack_type in inmune:
-    print(atack_type[0])
-
-
-
-# Queremos que nos muestre las stats
-print("------------Stats:------------")
-for stats in datos["stats"]:
-    stat_name = stats["stat"]["name"] 
-    stat_base = stats["base_stat"]
-    print(f"{stat_name}: {stat_base}")
+    # Mostramos el tipo del pokemon
+    tipos = obtener_tipos(datos)
+    print(f"------------Tipos de {datos['name']}:------------")
+    for tipo in tipos:
+        print(tipo)
     
-# Queremos que nos muestre las habilidades
-print("------------Ability:------------")
-for abilities in datos["abilities"]:
-    abiliies_name = abilities["ability"]["name"] 
-    stat_base = stats["base_stat"]
-    print(f"{abiliies_name}") 
+    # Mostramos debilidades
+    categorias = info_damage(tipos)
+    print("------------Debilidades del pokemon:------------")
+    print("------------Super effective 4x:------------")
+    for atack_type in categorias["super_effective_4x"]:
+        print(atack_type[0])
+    print("------------Super effective 2x:------------")
+    for atack_type in categorias["super_effective_2x"]:
+        print(atack_type[0])
+    print("------------Normal:------------")
+    for atack_type in categorias["normal_1x"]:
+        print(atack_type[0])
+    print("------------Not effective 0.5x:------------")
+    for atack_type in categorias["not_effective_05x"]:
+        print(atack_type[0])
+    print("------------Inmune:------------")
+    for atack_type in categorias["inmune"]:
+        print(atack_type[0])
 
-# Añadimos un bucle para que cuando digamos que no queremos comparar más se detenga el programa y si decimos si se vuelve a ejecutar el codigo
-while True: 
-    comparar_otro = input("\n¿Quieres comparar otro Pokémon? (si/no): ").lower() 
+    # Mostramos las Stats
+    print("------------Stats:------------")
+    for stats in datos["stats"]:
+        stat_name = stats["stat"]["name"] 
+        stat_base = stats["base_stat"]
+        print(f"{stat_name}: {stat_base}")
     
-    if comparar_otro == "si":
+    # Mostramos las abilidades
+    print("------------Ability:------------")
+    for abilities in datos["abilities"]:
+        abiliies_name = abilities["ability"]["name"] 
+        stat_base = stats["base_stat"]
+        print(f"{abiliies_name}") 
+
+# Creamos la función para que funcione el programa
+def main():
+    while True:
+        pokemon = input("Escribe un pokemon :").lower()
+        datos = obtener_datos_pokemon(pokemon)
+        if datos:
+                mostrar_informacion_pokemon(datos)
         
-        while True: 
-            pokemon = input("Escribe un pokemon: ").lower() 
+        comparar_otro = input("\n¿Quieres comparar otro Pokémon? (si/no): ").lower() 
     
-    
-            try: 
-                respuesta = requests.get(URL + pokemon) 
-                respuesta.raise_for_status() # Esto lanzará una excepción si la solicitud no fue exitosa 
+        if comparar_otro != "si":
+            print("-----Perfecto vuelve a ejecutar si quieres saber más----")
+            break            
+            
 
-                datos = respuesta.json()
-                break 
-            except requests.exceptions.HTTPError: 
-                print("Error: El Pokémon no existe. Por favor, introduce un nombre válido.")
-
-
-
-        url_image = datos["sprites"]["other"]["official-artwork"]["front_default"]
-
-
-        print("------------Imagen:------------")
-
-        im = Image.open(urlopen(url_image))
-        plt.imshow(im)
-        plt.show()
-
-
-
-        tipo_elegido = []
-
-
-        print(f"------------Tipo de {pokemon}:------------")
-
-        for types in datos["types"]:
-            tipo = types["type"]["name"]
-            tipo_elegido.append(tipo)
-            print(tipo)
-
-
-        def info_damage(tipos):
-            combined_types = {}
-
-            for tipo in tipos:
-                if tipo in my_module.info_types:
-                    for atack_type, multiplicator in my_module.info_types[tipo].items():
-                        if atack_type in combined_types:
-                            combined_types[atack_type] *= multiplicator
-                        else:
-                            combined_types[atack_type] = multiplicator
-
-            super_effective_4x = []
-            super_effective_2x = []
-            normal_1x = []
-            not_effective_05x = []
-            inmune = []
-
-            for atack_type, value in combined_types.items():
-                if value == 4:
-                    super_effective_4x.append((atack_type, value))
-                elif value == 2:
-                    super_effective_2x.append((atack_type, value))
-                elif value == 1:
-                    normal_1x.append((atack_type, value))
-                elif value == 0.5:
-                    not_effective_05x.append((atack_type, value))
-                else:
-                    inmune.append((atack_type, value))
-
-            return super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune
-
-        super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune = info_damage(tipo_elegido)
-
-
-        print("------------Debilidades del pokemon:------------")
-        print("------------Super effective 4x:------------")
-        for atack_type in super_effective_4x:
-            print(atack_type[0])
-        print("------------Super effective 2x:------------")
-        for atack_type in super_effective_2x:
-            print(atack_type[0])
-        print("------------Normal:------------")
-        for atack_type in normal_1x:
-            print(atack_type[0])
-        print("------------Not effective 0.5x:------------")
-        for atack_type in not_effective_05x:
-            print(atack_type[0])
-        print("------------Inmune:------------")
-        for atack_type in inmune:
-            print(atack_type[0])
-
-
-
-        print("------------Stats:------------")
-        for stats in datos["stats"]:
-            stat_name = stats["stat"]["name"] 
-            stat_base = stats["base_stat"]
-            print(f"{stat_name}: {stat_base}")
-    
-
-        print("------------Ability:------------")
-        for abilities in datos["abilities"]:
-            abiliies_name = abilities["ability"]["name"] 
-            stat_base = stats["base_stat"]
-            print(f"{abiliies_name}") 
-        
-    else: 
-        print("-----Perfecto vuelve a ejecutar si quieres saber más----")
-        break
+if __name__=="__main__":
+    main()
