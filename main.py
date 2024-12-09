@@ -132,6 +132,7 @@ for abilities in datos["abilities"]:
     stat_base = stats["base_stat"]
     print(f"{abiliies_name}") 
 
+# Añadimos un bucle para que cuando digamos que no queremos comparar más se detenga el programa y si decimos si se vuelve a ejecutar el codigo
 while True: 
     comparar_otro = input("\n¿Quieres comparar otro Pokémon? (si/no): ").lower() 
     
@@ -241,5 +242,5 @@ while True:
             print(f"{abiliies_name}") 
         
     else: 
-        print("Perfecto vuelve a ejecutar si quieres saber más")
+        print("-----Perfecto vuelve a ejecutar si quieres saber más----")
         break
