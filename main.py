@@ -99,7 +99,7 @@ def info_damage(tipos):
 super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune = info_damage(tipo_elegido)
 
 # Ejecutamos el codigo
-
+print("------------Debilidades del pokemon:------------")
 print("------------Super effective 4x:------------")
 for atack_type in super_effective_4x:
     print(atack_type[0])
@@ -132,3 +132,114 @@ for abilities in datos["abilities"]:
     stat_base = stats["base_stat"]
     print(f"{abiliies_name}") 
 
+while True: 
+    comparar_otro = input("\n¿Quieres comparar otro Pokémon? (si/no): ").lower() 
+    
+    if comparar_otro == "si":
+        
+        while True: 
+            pokemon = input("Escribe un pokemon: ").lower() 
+    
+    
+            try: 
+                respuesta = requests.get(URL + pokemon) 
+                respuesta.raise_for_status() # Esto lanzará una excepción si la solicitud no fue exitosa 
+
+                datos = respuesta.json()
+                break 
+            except requests.exceptions.HTTPError: 
+                print("Error: El Pokémon no existe. Por favor, introduce un nombre válido.")
+
+
+
+        url_image = datos["sprites"]["other"]["official-artwork"]["front_default"]
+
+
+        print("------------Imagen:------------")
+
+        im = Image.open(urlopen(url_image))
+        plt.imshow(im)
+        plt.show()
+
+
+
+        tipo_elegido = []
+
+
+        print(f"------------Tipo de {pokemon}:------------")
+
+        for types in datos["types"]:
+            tipo = types["type"]["name"]
+            tipo_elegido.append(tipo)
+            print(tipo)
+
+
+        def info_damage(tipos):
+            combined_types = {}
+
+            for tipo in tipos:
+                if tipo in my_module.info_types:
+                    for atack_type, multiplicator in my_module.info_types[tipo].items():
+                        if atack_type in combined_types:
+                            combined_types[atack_type] *= multiplicator
+                        else:
+                            combined_types[atack_type] = multiplicator
+
+            super_effective_4x = []
+            super_effective_2x = []
+            normal_1x = []
+            not_effective_05x = []
+            inmune = []
+
+            for atack_type, value in combined_types.items():
+                if value == 4:
+                    super_effective_4x.append((atack_type, value))
+                elif value == 2:
+                    super_effective_2x.append((atack_type, value))
+                elif value == 1:
+                    normal_1x.append((atack_type, value))
+                elif value == 0.5:
+                    not_effective_05x.append((atack_type, value))
+                else:
+                    inmune.append((atack_type, value))
+
+            return super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune
+
+        super_effective_4x, super_effective_2x, normal_1x, not_effective_05x, inmune = info_damage(tipo_elegido)
+
+
+        print("------------Debilidades del pokemon:------------")
+        print("------------Super effective 4x:------------")
+        for atack_type in super_effective_4x:
+            print(atack_type[0])
+        print("------------Super effective 2x:------------")
+        for atack_type in super_effective_2x:
+            print(atack_type[0])
+        print("------------Normal:------------")
+        for atack_type in normal_1x:
+            print(atack_type[0])
+        print("------------Not effective 0.5x:------------")
+        for atack_type in not_effective_05x:
+            print(atack_type[0])
+        print("------------Inmune:------------")
+        for atack_type in inmune:
+            print(atack_type[0])
+
+
+
+        print("------------Stats:------------")
+        for stats in datos["stats"]:
+            stat_name = stats["stat"]["name"] 
+            stat_base = stats["base_stat"]
+            print(f"{stat_name}: {stat_base}")
+    
+
+        print("------------Ability:------------")
+        for abilities in datos["abilities"]:
+            abiliies_name = abilities["ability"]["name"] 
+            stat_base = stats["base_stat"]
+            print(f"{abiliies_name}") 
+        
+    else: 
+        print("Perfecto vuelve a ejecutar si quieres saber más")
+        break
