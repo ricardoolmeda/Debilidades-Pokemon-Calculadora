@@ -28,7 +28,7 @@ def obtener_datos_pokemon(pokemon):
 # print(datos) # Para ver todos los datos que hay
 
 # Creamos la funcion para mostrar la imagen
-def mostar_imagen(url_image):
+def mostrar_imagen(url_image):
     im = Image.open(urlopen(url_image))
     plt.imshow(im)
     plt.show()
@@ -77,7 +77,7 @@ def mostrar_informacion_pokemon(datos):
     # Mostramos la imagen
     url_image = datos["sprites"]["other"]["official-artwork"]["front_default"] # Para cargar la imagen
     print("------------Imagen:------------")
-    mostar_imagen(url_image)
+    mostrar_imagen(url_image)
 
     # Mostramos el tipo del pokemon
     tipos = obtener_tipos(datos)
@@ -88,21 +88,10 @@ def mostrar_informacion_pokemon(datos):
     # Mostramos debilidades
     categorias = info_damage(tipos)
     print("------------Debilidades del pokemon:------------")
-    print("------------Super effective 4x:------------")
-    for atack_type in categorias["super_effective_4x"]:
-        print(atack_type[0])
-    print("------------Super effective 2x:------------")
-    for atack_type in categorias["super_effective_2x"]:
-        print(atack_type[0])
-    print("------------Normal:------------")
-    for atack_type in categorias["normal_1x"]:
-        print(atack_type[0])
-    print("------------Not effective 0.5x:------------")
-    for atack_type in categorias["not_effective_05x"]:
-        print(atack_type[0])
-    print("------------Inmune:------------")
-    for atack_type in categorias["inmune"]:
-        print(atack_type[0])
+    for categoria in categorias:
+        print(f"-----{categoria}-----")
+        for atack_type in categorias[categoria]:
+            print(atack_type[0])
 
     # Mostramos las Stats
     print("------------Stats:------------")
