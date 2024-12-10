@@ -43,14 +43,14 @@ def info_damage(tipos):
     combined_types = {}
 
     for tipo in tipos:
-        if tipo in my_module.info_types:
-            for atack_type, multiplicator in my_module.info_types[tipo].items():
+        if tipo in my_module.info_types: # Lo que hace es llamar al modelo donde esta los tipos de daño
+            for atack_type, multiplicator in my_module.info_types[tipo].items(): # Creamos un bucle para que repita las combincaciones posibles
                 if atack_type in combined_types:
-                    combined_types[atack_type] *= multiplicator
+                    combined_types[atack_type] *= multiplicator # Si los tipos se repiten se multiplican
                 else:
                     combined_types[atack_type] = multiplicator
 
-    categorias = { 
+    categorias = {  # Son todas las confinaciones de daño que hay 
         "super_effective_4x": [], 
         "super_effective_2x": [], 
         "normal_1x": [], 
@@ -58,7 +58,7 @@ def info_damage(tipos):
         "inmune": [] }
             
 
-    for atack_type, value in combined_types.items():
+    for atack_type, value in combined_types.items(): # Retornamos el bucle para que sumen todos los tipos de daño
         if value == 4:
             categorias["super_effective_4x"].append((atack_type, value))
         elif value == 2:
@@ -72,6 +72,7 @@ def info_damage(tipos):
 
     return categorias
 
+# Creamos la funcion para que nos informe de todos los datos del pokemon
 def mostrar_informacion_pokemon(datos):
     # Mostramos la imagen
     url_image = datos["sprites"]["other"]["official-artwork"]["front_default"] # Para cargar la imagen
@@ -129,7 +130,7 @@ def main():
     
         if comparar_otro != "si":
             print("-----Perfecto vuelve a ejecutar si quieres saber más----")
-            break            
+            break    
             
 
 if __name__=="__main__":
