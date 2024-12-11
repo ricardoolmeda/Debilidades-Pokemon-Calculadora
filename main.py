@@ -16,13 +16,8 @@ def obtener_datos_pokemon(pokemon):
     try: 
         respuesta = requests.get(URL + pokemon) # Llamos a nuestro requests con get para que nos muestre los valores mediante get para que nos lo muestre
         respuesta.raise_for_status()
-        
-        
-
-        if respuesta.headers.get("Content-Type") == "application/json": # Validamos si el contenido es JSON
-            pokemon_data = respuesta.json() 
-            return pokemon_data # Podemos saber si la API tiene algún error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-        
+        pokemon_data = respuesta.json() 
+        return pokemon_data # Podemos saber si la API tiene algún error https://developer.mozilla.org/en-US/docs/Web/HTTP/Statusp
     except requests.exceptions.HTTPError: 
         print("Error: El Pokémon no existe. Por favor, introduce un nombre válido.")
         return None
