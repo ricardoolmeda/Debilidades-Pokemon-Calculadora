@@ -19,7 +19,7 @@ def obtener_datos_pokemon(pokemon):
         
         
 
-        if respuesta.header.get("Content-Type") == "application/json": # Validamos si el contenido es JSON
+        if respuesta.headers.get("Content-Type") == "application/json": # Validamos si el contenido es JSON
             pokemon_data = respuesta.json() 
             return pokemon_data # Podemos saber si la API tiene algún error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
         
