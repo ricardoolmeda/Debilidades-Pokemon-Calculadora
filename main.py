@@ -15,10 +15,14 @@ URL = "https://pokeapi.co/api/v2/pokemon/"
 def obtener_datos_pokemon(pokemon):      
     try: 
         respuesta = requests.get(URL + pokemon) # Llamos a nuestro requests con get para que nos muestre los valores mediante get para que nos lo muestre
-        respuesta.raise_for_status() 
-        return respuesta.json() # Podemos saber si la API tiene algún error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+        respuesta.raise_for_status()
+        pokemon_data = respuesta.json() 
+        return pokemon_data # Podemos saber si la API tiene algún error https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
     except requests.exceptions.HTTPError: 
         print("Error: El Pokémon no existe. Por favor, introduce un nombre válido.")
+        return None
+    except Exception as e:
+        print(f"Error al obtener los datos del Pokémon: {e}")
         return None
 
 # Asi podemos ver todo lo que trae la API al ser un archivo .json lo tenemos que indicar para ver lo que trae
@@ -29,48 +33,61 @@ def obtener_datos_pokemon(pokemon):
 
 # Creamos la funcion para mostrar la imagen
 def mostrar_imagen(url_image):
-    im = Image.open(urlopen(url_image))
-    plt.imshow(im)
-    plt.show()
+    try:
+        im = Image.open(urlopen(url_image))
+        plt.imshow(im)
+        plt.show()
+    except Exception as e:
+        print(f"Error al obtener los datos del Pokémon: {e}")
+        return []
 
 # Creamos la funcion para obtener los tipos del pokemon
 def obtener_tipos(datos):
-   tipos = [tipo["type"]["name"] for tipo in datos["types"]] 
-   return tipos
+    try:
+        return [tipo["type"]["name"] for tipo in datos["types"]]
+    
+    except Exception as e:
+        print(f"Error al obtener los datos del Pokémon: {e}")
+        return []
 
 # Creamos la funcion de daños
 def info_damage(tipos):
-    combined_types = {}
+    try:
+        combined_types = {}
 
-    for tipo in tipos:
-        if tipo in my_module.info_types: # Lo que hace es llamar al modelo donde esta los tipos de daño
-            for atack_type, multiplicator in my_module.info_types[tipo].items(): # Creamos un bucle para que repita las combincaciones posibles
-                if atack_type in combined_types:
-                    combined_types[atack_type] *= multiplicator # Si los tipos se repiten se multiplican
-                else:
-                    combined_types[atack_type] = multiplicator
+        for tipo in tipos:
+            if tipo in my_module.info_types: # Lo que hace es llamar al modelo donde esta los tipos de daño
+                for atack_type, multiplicator in my_module.info_types[tipo].items(): # Creamos un bucle para que repita las combincaciones posibles
+                    if atack_type in combined_types:
+                        combined_types[atack_type] *= multiplicator # Si los tipos se repiten se multiplican
+                    else:
+                        combined_types[atack_type] = multiplicator
 
-    categorias = {  # Son todas las confinaciones de daño que hay 
-        "super_effective_4x": [], 
-        "super_effective_2x": [], 
-        "normal_1x": [], 
-        "not_effective_05x": [], 
-        "inmune": [] }
-            
+        categorias = {  # Son todas las confinaciones de daño que hay 
+            "super_effective_4x": [], 
+            "super_effective_2x": [], 
+            "normal_1x": [], 
+            "not_effective_05x": [], 
+            "inmune": [] }
+                
 
-    for atack_type, value in combined_types.items(): # Retornamos el bucle para que sumen todos los tipos de daño
-        if value == 4:
-            categorias["super_effective_4x"].append((atack_type, value))
-        elif value == 2:
-            categorias["super_effective_2x"].append((atack_type, value))
-        elif value == 1:
-            categorias["normal_1x"].append((atack_type, value))
-        elif value == 0.5:
-            categorias["not_effective_05x"].append((atack_type, value))
-        else:
-            categorias["inmune"].append((atack_type, value))
+        for atack_type, value in combined_types.items(): # Retornamos el bucle para que sumen todos los tipos de daño
+            if value == 4:
+                categorias["super_effective_4x"].append((atack_type, value))
+            elif value == 2:
+                categorias["super_effective_2x"].append((atack_type, value))
+            elif value == 1:
+                categorias["normal_1x"].append((atack_type, value))
+            elif value == 0.5:
+                categorias["not_effective_05x"].append((atack_type, value))
+            else:
+                categorias["inmune"].append((atack_type, value))
 
-    return categorias
+        return categorias
+    
+    except Exception as e:
+        print(f"Error al obtener los datos del Pokémon: {e}")
+        return []
 
 # Creamos la funcion para que nos informe de todos los datos del pokemon
 def mostrar_informacion_pokemon(datos):
