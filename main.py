@@ -134,8 +134,10 @@ def main():
         
         comparar_otro = input("\n¿Quieres comparar otro Pokémon? (si/no): ").lower() 
     
-        if comparar_otro != "si":
+        if comparar_otro == "no":
             print("-----Perfecto vuelve a ejecutar si quieres saber más----")
+        elif comparar_otro != "si": 
+            print("---Has puesto mal el nombre del pokemon vuelve a ejecutar el programa")
             break    
             
 
