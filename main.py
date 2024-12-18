@@ -63,23 +63,26 @@ def info_damage(tipos):
                     else:
                         combined_types[atack_type] = multiplicator
 
-        categorias = {  # Son todas las confinaciones de daño que hay 
-            "super_effective_4x": [], 
-            "super_effective_2x": [], 
+        categorias = {  # Son todas las combinaciones de daño que hay
+            "super_debil_4x": [], 
+            "debil_2x": [], 
             "normal_1x": [], 
-            "not_effective_05x": [], 
-            "inmune": [] }
-                
-
-        for atack_type, value in combined_types.items(): # Retornamos el bucle para que sumen todos los tipos de daño
+            "resistente_05x": [], 
+            "super_resistente_025x": [],
+            "inmune": []
+        }
+        
+        for atack_type, value in combined_types.items():  # Retornamos el bucle para que sumen todos los tipos de daño
             if value == 4:
-                categorias["super_effective_4x"].append((atack_type, value))
+                categorias["super_debil_4x"].append((atack_type, value))
             elif value == 2:
-                categorias["super_effective_2x"].append((atack_type, value))
+                categorias["debil_2x"].append((atack_type, value))
             elif value == 1:
                 categorias["normal_1x"].append((atack_type, value))
             elif value == 0.5:
-                categorias["not_effective_05x"].append((atack_type, value))
+                categorias["resistente_05x"].append((atack_type, value))
+            elif value == 0.25:
+                categorias["super_resistente_025x"].append((atack_type, value))
             else:
                 categorias["inmune"].append((atack_type, value))
 
