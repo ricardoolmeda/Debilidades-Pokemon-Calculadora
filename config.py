@@ -49,16 +49,42 @@ def mostrar_stats(stats):
         return []    
 
 # Mostramos las abilidades
+import requests
+
 def mostrar_ability(ability):
-    try: 
+    try:
         print("------------Ability:------------")
         for abilities in ability["abilities"]:
-            abiliies_name = abilities["ability"]["name"] 
-            print(f"{abiliies_name}") 
+            ability_name = abilities["ability"]["name"]
+            ability_url = abilities["ability"]["url"]
 
+            # Hacer una solicitud HTTP a la URL de la habilidad
+            respuesta = requests.get(ability_url)
+            datos_habilidad = respuesta.json()
+
+            # Mostrar la información detallada de la habilidad
+            effect_entries = datos_habilidad.get("effect_entries", [])
+            for entry in effect_entries:
+                if entry["language"]["name"] == "en":
+                    short_effect = entry["short_effect"]
+                    print(f"Nombre: {ability_name}")
+                    print(f"Efecto Corto: {short_effect}")
+                    print("----------------------------")
+                    
     except Exception as e:
-        print(f"Error al obtener las abilidades del Pokémon: {e}")
+        print(f"Error al obtener las habilidades del Pokémon: {e}")
         return []
+
+# Ejemplo de uso
+ability_data = {
+    "abilities": [
+        {"ability": {"name": "static", "url": "https://pokeapi.co/api/v2/ability/9/"}},
+        {"ability": {"name": "lightning-rod", "url": "https://pokeapi.co/api/v2/ability/31/"}}
+    ]
+}
+
+mostrar_ability(ability_data)
+
 
 # Mostramos los tipos
 def mostrar_tipos(types):
@@ -131,11 +157,11 @@ def main():
         pokemon = input("Escribe un pokemon :").lower()
         datos = obtener_datos_pokemon(pokemon)
         if datos:
-                mostrar_imagen(datos)
-                mostrar_stats(datos)
+                # mostrar_imagen(datos)
+                # mostrar_stats(datos)
                 mostrar_ability(datos)
-                mostrar_tipos(datos)
-                mostrar_damage(datos)
+                # mostrar_tipos(datos)
+                # mostrar_damage(datos)
 
         
         comparar_otro = input("\n¿Quieres comparar otro Pokémon? (si/no): ").lower() 
